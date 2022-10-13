@@ -1,44 +1,78 @@
+import { useCallback, useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBuilding, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
+import { api } from '../../../../lib/axios'
 import { ExternalLink } from '../../../../components/ExternalLink'
 
 import { ProfileContainer, ProfileDetails, ProfilePicture } from './styles'
 
+interface ProfileData {
+  login: string
+  bio: string
+  avatar_url: string
+  html_url: string
+  name: string
+  company?: string
+  followers: number
+}
+
+const username = import.meta.env.VITE_GITHUB_USERNAME
+
 export function Profile() {
+  const [profileData, setProfileData] = useState<ProfileData>({} as ProfileData)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const getProfileData = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      const response = await api.get(`/users/${username}`)
+      setProfileData(response.data)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    getProfileData()
+  }, [getProfileData])
+
   return (
     <ProfileContainer>
-      <ProfilePicture
-        src="https://s3-alpha-sig.figma.com/img/c460/226f/8a0e7a6ab75fc2eabd9a0a9ae72f8ea0?Expires=1665964800&Signature=FzVv2CVODZI-68yXe7bhlIdNPc5h9fa0XLwkXfCAr8KbEPodrXxjYb8l-G1YyytpuVZmsvePXt6CMCWJLIKw85CYleCYIYk85nw3HIwvUo~lGPKEHCpAKmc97foPQLrdpbLC4HOjY52b48r9Rxv10eiI6BwzJSSIvrEQL56ZdCifcSM-h-yPt7NJhIFw8nET6TAKOlcYfQZhn72nfvySjoB2N7CALuqN7WWYgZ2IHqKVZYv6xqodvRQPUs-UxTeKxGEe-bB4LrYkiQCzScFRuVgvl89qYQZU9tiQiqGpMw9YCX~VYfUXG5hBtaoJznBrVbldvqRCQ8puac6hGEDf6A__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
-        alt=""
-      />
+      <ProfilePicture src={profileData.avatar_url} alt="" />
 
       <ProfileDetails>
         <header>
-          <h1>Cameron Williamson</h1>
+          <h1>{profileData.name}</h1>
 
-          <ExternalLink text="Github" href="#" />
+          <ExternalLink
+            text="Github"
+            href={profileData.html_url}
+            target="_blank"
+          />
         </header>
 
-        <p>
-          Tristique volutpat pulvinar vel massa, pellentesque egestas. Eu
-          viverra massa quam dignissim aenean malesuada suscipit. Nunc, volutpat
-          pulvinar vel mass.
-        </p>
+        <p>{profileData.bio}</p>
 
         <ul>
           <li>
             <FontAwesomeIcon icon={faGithub} />
-            cameronwll
+            {profileData.login}
           </li>
-          <li>
-            <FontAwesomeIcon icon={faBuilding} />
-            Rocketseat
-          </li>
+          {profileData.company && (
+            <li>
+              <FontAwesomeIcon icon={faBuilding} />
+              {profileData.company}
+            </li>
+          )}
           <li>
             <FontAwesomeIcon icon={faUserGroup} />
-            32 seguidores
+            {profileData.followers >= 2
+              ? `${profileData.followers} seguidores`
+              : profileData.followers === 1
+              ? `${profileData.followers} seguidor`
+              : 'Nenhum seguidor'}
           </li>
         </ul>
       </ProfileDetails>
