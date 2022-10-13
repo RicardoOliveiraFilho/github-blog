@@ -46,7 +46,7 @@ export function Blog() {
   return (
     <>
       <Profile />
-      <SearchInput />
+      <SearchInput postsLength={posts.length} getPosts={getPosts} />
       <PostsListContainer>
         {isLoading ? (
           <p>Carregando...</p>
