@@ -2,7 +2,7 @@ import { PostCardContainer } from './styles'
 
 export function PostCard() {
   return (
-    <PostCardContainer>
+    <PostCardContainer to="/post/1">
       <div>
         <strong>
           JavaScript data types and data structuresJavaScript data types and
