@@ -7,6 +7,7 @@ import { api } from '../../../../lib/axios'
 import { ExternalLink } from '../../../../components/ExternalLink'
 
 import { ProfileContainer, ProfileDetails, ProfilePicture } from './styles'
+import { Spinner } from '../../../../components/Spinner'
 
 interface ProfileData {
   login: string
@@ -40,42 +41,48 @@ export function Profile() {
 
   return (
     <ProfileContainer>
-      <ProfilePicture src={profileData.avatar_url} alt="" />
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <>
+          <ProfilePicture src={profileData.avatar_url} alt="" />
 
-      <ProfileDetails>
-        <header>
-          <h1>{profileData.name}</h1>
+          <ProfileDetails>
+            <header>
+              <h1>{profileData.name}</h1>
 
-          <ExternalLink
-            text="Github"
-            href={profileData.html_url}
-            target="_blank"
-          />
-        </header>
+              <ExternalLink
+                text="Github"
+                href={profileData.html_url}
+                target="_blank"
+              />
+            </header>
 
-        <p>{profileData.bio}</p>
+            <p>{profileData.bio}</p>
 
-        <ul>
-          <li>
-            <FontAwesomeIcon icon={faGithub} />
-            {profileData.login}
-          </li>
-          {profileData.company && (
-            <li>
-              <FontAwesomeIcon icon={faBuilding} />
-              {profileData.company}
-            </li>
-          )}
-          <li>
-            <FontAwesomeIcon icon={faUserGroup} />
-            {profileData.followers >= 2
-              ? `${profileData.followers} seguidores`
-              : profileData.followers === 1
-              ? `${profileData.followers} seguidor`
-              : 'Nenhum seguidor'}
-          </li>
-        </ul>
-      </ProfileDetails>
+            <ul>
+              <li>
+                <FontAwesomeIcon icon={faGithub} />
+                {profileData.login}
+              </li>
+              {profileData.company && (
+                <li>
+                  <FontAwesomeIcon icon={faBuilding} />
+                  {profileData.company}
+                </li>
+              )}
+              <li>
+                <FontAwesomeIcon icon={faUserGroup} />
+                {profileData.followers >= 2
+                  ? `${profileData.followers} seguidores`
+                  : profileData.followers === 1
+                  ? `${profileData.followers} seguidor`
+                  : 'Nenhum seguidor'}
+              </li>
+            </ul>
+          </ProfileDetails>
+        </>
+      )}
     </ProfileContainer>
   )
 }

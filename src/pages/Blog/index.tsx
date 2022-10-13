@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { Spinner } from '../../components/Spinner'
 
 import { api } from '../../lib/axios'
 
@@ -49,7 +50,7 @@ export function Blog() {
       <SearchInput postsLength={posts.length} getPosts={getPosts} />
       <PostsListContainer>
         {isLoading ? (
-          <p>Carregando...</p>
+          <Spinner />
         ) : (
           posts.map((post) => <PostCard key={post.number} post={post} />)
         )}
