@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { Spinner } from '../../components/Spinner'
 import { api } from '../../lib/axios'
 import { IPost } from '../Blog'
+import { PostContent } from './components/PostContent'
 import { PostHeader } from './components/PostHeader'
 
 const userName = import.meta.env.VITE_GITHUB_USERNAME
@@ -32,6 +34,7 @@ export function Post() {
   return (
     <>
       <PostHeader isLoading={isLoading} postData={postData} />
+      {isLoading ? <Spinner /> : <PostContent content={postData.body} />}
     </>
   )
 }
